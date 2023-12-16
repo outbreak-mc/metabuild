@@ -6,7 +6,6 @@ import com.github.ajalt.clikt.parameters.options.option
 import space.outbreak.metabuild.MetaYmlConf
 import space.outbreak.metabuild.PackMcMeta
 import space.outbreak.metabuild.allowedExtensions
-import space.outbreak.metabuild.mapper
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -73,7 +72,7 @@ class ResourcepackZipCommand : CliktCommand(name = "zip", help = "Build a resour
             return
         }
 
-        val packYml = mapper.readValue(packYmlPath, MetaYmlConf::class.java)
+        val packYml = MetaYmlConf.fromFile(packYmlPath)
 
         if ("dirname" !in packYml.placeholders)
             packYml.placeholders["dirname"] = inputDir.name

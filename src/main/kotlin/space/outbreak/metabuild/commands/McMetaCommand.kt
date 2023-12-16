@@ -5,7 +5,6 @@ import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
 import space.outbreak.metabuild.MetaYmlConf
 import space.outbreak.metabuild.PackMcMeta
-import space.outbreak.metabuild.mapper
 import java.io.File
 
 class McMetaCommand : CliktCommand(name = "mcmeta", help = "Generate pack.mcmeta") {
@@ -22,7 +21,7 @@ class McMetaCommand : CliktCommand(name = "mcmeta", help = "Generate pack.mcmeta
             return
         }
 
-        val packYml = mapper.readValue(packYmlPath, MetaYmlConf::class.java)
+        val packYml = MetaYmlConf.fromFile(packYmlPath)
 
         if ("dirname" !in packYml.placeholders)
             packYml.placeholders["dirname"] = inputDir.name

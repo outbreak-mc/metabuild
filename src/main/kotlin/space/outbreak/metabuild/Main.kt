@@ -8,6 +8,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLMapper
 import com.fasterxml.jackson.module.kotlin.KotlinFeature
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.github.ajalt.clikt.core.subcommands
+import space.outbreak.metabuild.commands.InfoCommand
 import space.outbreak.metabuild.commands.InitCommand
 import space.outbreak.metabuild.commands.McMetaCommand
 import space.outbreak.metabuild.commands.ResourcepackZipCommand
@@ -33,5 +34,6 @@ val allowedExtensions = setOf("png", "mcmeta", "json", "dat", "lang", "ttf", "mc
 fun main(args: Array<String>) = CLI().subcommands(
     ResourcepackZipCommand(),
     McMetaCommand(),
-    InitCommand()
+    InitCommand(),
+    InfoCommand()
 ).main(args)

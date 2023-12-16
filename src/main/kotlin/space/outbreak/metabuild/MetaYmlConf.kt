@@ -3,6 +3,7 @@ package space.outbreak.metabuild
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import org.apache.commons.text.StringSubstitutor
+import java.io.File
 
 
 data class MetaYmlConf(
@@ -30,5 +31,14 @@ data class MetaYmlConf(
         val meta = PackMcMeta(getNumberPackFormat()!!)
         meta.setMMDescription(description, placeholders = placeholders)
         return meta
+    }
+
+    companion object {
+        fun fromFile(packYmlFile: File): MetaYmlConf {
+            val meta = mapper.readValue(packYmlFile, MetaYmlConf::class.java)
+            if ("dirname" !in meta.placeholders)
+                meta.placeholders["dirname"] = packYmlFile.parentFile.name
+            return meta
+        }
     }
 }

@@ -22,6 +22,7 @@ dependencies {
     api("net.kyori:adventure-text-serializer-gson:${adventureVersion}")
     api("net.kyori:adventure-api:${adventureVersion}")
     api("net.kyori:adventure-text-minimessage:${adventureVersion}")
+    api("net.kyori:adventure-text-serializer-plain:${adventureVersion}")
     api("org.apache.commons:commons-text:1.10.0")
     api("com.fasterxml.jackson.module:jackson-module-kotlin:${jacksonVersion}")
     api("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:${jacksonVersion}")
