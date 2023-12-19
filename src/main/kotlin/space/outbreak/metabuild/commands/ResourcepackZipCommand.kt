@@ -4,7 +4,6 @@ import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.default
 import com.github.ajalt.clikt.parameters.options.option
 import space.outbreak.metabuild.MetaYmlConf
-import space.outbreak.metabuild.PackMcMeta
 import space.outbreak.metabuild.allowedExtensions
 import java.io.BufferedOutputStream
 import java.io.File
@@ -77,7 +76,7 @@ class ResourcepackZipCommand : CliktCommand(name = "zip", help = "Build a resour
         if ("dirname" !in packYml.placeholders)
             packYml.placeholders["dirname"] = inputDir.name
 
-        val mcMeta = PackMcMeta(pack_format = packYml.getNumberPackFormat()!!)
+        val mcMeta = packYml.toMcMeta()
 
         mcmetaPath.bufferedWriter(Charsets.UTF_8).use { out ->
             out.write(mcMeta.generatePackMcMetaJsonString())
