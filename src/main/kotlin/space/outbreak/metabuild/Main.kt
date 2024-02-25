@@ -29,7 +29,7 @@ val mapper: ObjectMapper = YAMLMapper.builder()
     )
     .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 
-val allowedExtensions = setOf("png", "mcmeta", "json", "dat", "lang", "ttf", "mcfunction", "ogg", "model")
+val allowedExtensions = setOf("png", "mcmeta", "json", "dat", "lang", "ttf", "mcfunction", "ogg", "model", "properties")
 
 fun main(args: Array<String>) = CLI().subcommands(
     ResourcepackZipCommand(),

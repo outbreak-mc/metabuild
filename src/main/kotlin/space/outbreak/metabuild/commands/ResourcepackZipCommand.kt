@@ -2,6 +2,7 @@ package space.outbreak.metabuild.commands
 
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.default
+import com.github.ajalt.clikt.parameters.options.flag
 import com.github.ajalt.clikt.parameters.options.option
 import space.outbreak.metabuild.MetaYmlConf
 import space.outbreak.metabuild.allowedExtensions
@@ -14,6 +15,11 @@ import java.util.zip.ZipOutputStream
 class ResourcepackZipCommand : CliktCommand(name = "zip", help = "Build a resourcepack zip") {
     private val inputPathRaw by option("-i", "--input", help = "Resourcepack directory to zip").default(".")
     private val outputPathRaw by option("-o", "--output", help = "Location to save output zip file").default(".")
+    private val overwrite by option(
+        "--overwrite",
+        "-y",
+        help = "Overwrite existing files. Otherwise, execution will be cancelled if any of output files already exists."
+    ).flag()
 
     private val inputDir by lazy { File(inputPathRaw).absoluteFile.normalize() }
     private val outputDir by lazy { File(outputPathRaw).absoluteFile.normalize() }
@@ -31,9 +37,10 @@ class ResourcepackZipCommand : CliktCommand(name = "zip", help = "Build a resour
                     val zipFileName = file.absolutePath.removePrefix(inputDirectory.absolutePath)
                         .removePrefix("/")
                         .removePrefix("\\")
+                        .replace("\\", "/")
 
                     // Only assets folder is allowed in the root of the resourcepack
-                    if ((zipFileName.contains("\\") || zipFileName.contains("/")) && !zipFileName.contains("assets")) {
+                    if (zipFileName.contains("/") && !zipFileName.contains("assets")) {
                         return@forEach
                     }
 
@@ -85,6 +92,11 @@ class ResourcepackZipCommand : CliktCommand(name = "zip", help = "Build a resour
         mcMeta.setMMDescription(packYml.description, placeholders = packYml.placeholders)
 
         outputDir.resolve("${packYml.getNameWithPlaceholders()}.zip").let { outPath ->
+            if (outPath.exists() && !overwrite) {
+                echo("Error: output file already exists! Use -y to overwrite.", err = true)
+                return@run
+            }
+
             zipResourcePack(inputDir, outPath)
             echo(outPath)
         }

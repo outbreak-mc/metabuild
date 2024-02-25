@@ -11,7 +11,11 @@ import java.io.File
 class InitCommand : CliktCommand(name = "init", help = "Initialize default pack.yml and pack.mcmeta") {
     private val inputDirRaw by option("-d", "--dir", help = "Path to the resourcepack root directory").default(".")
     private val inputDir by lazy { File(inputDirRaw).absoluteFile.normalize() }
-    private val overwrite by option("--overwrite").flag("--preserve", default = false)
+    private val overwrite by option(
+        "--overwrite",
+        "-y",
+        help = "Overwrite existing files. Otherwise, execution will be cancelled if any of output files already exists."
+    ).flag()
 
     override fun run() {
         if (!inputDir.exists()) {
@@ -25,18 +29,23 @@ class InitCommand : CliktCommand(name = "init", help = "Initialize default pack.
         val metaConf = MetaYmlConf(name = inputDir.name)
         val meta = metaConf.toMcMeta()
 
-        if (!packYmlFile.exists() || overwrite)
-            packYmlFile.bufferedWriter(Charsets.UTF_8).use { out ->
-                mapper.writeValue(out, metaConf)
+        if (!overwrite) {
+            if (packYmlFile.exists()) {
+                echo("pack.yml already exists! Use -y to overwrite.", err = true)
+                return
             }
-        else
-            echo("pack.yml already exist")
+            if (packMcmetaFile.exists()) {
+                echo("pack.yml already exists! Use -y to overwrite.", err = true)
+                return
+            }
+        }
 
-        if (!packMcmetaFile.exists() || overwrite)
-            packMcmetaFile.bufferedWriter(Charsets.UTF_8).use { out ->
-                out.write(meta.generatePackMcMetaJsonString())
-            }
-        else
-            echo("pack.mcmeta already exist")
+        packYmlFile.bufferedWriter(Charsets.UTF_8).use { out ->
+            mapper.writeValue(out, metaConf)
+        }
+
+        packMcmetaFile.bufferedWriter(Charsets.UTF_8).use { out ->
+            out.write(meta.generatePackMcMetaJsonString())
+        }
     }
 }
